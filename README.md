@@ -65,8 +65,8 @@ PowerShell 5.1+
 ### 1. Clone or Download
 
 ```powershell
-git clone https://github.com/yourusername/lab3-password-reset.git
-cd lab3-password-reset
+git clone https://github.com/SuriyaBoon/home-lab-v3.git
+cd home-lab-v3
 ```
 
 ### 2. Verify Prerequisites
@@ -116,11 +116,18 @@ Every step is reflected in the Status Bar at the bottom and automatically writte
 
 **Validation in Action**
 
-![Validation](screenshots/02-Validation.png)
+![Validation](screenshots/02-Error-Validation.png)
+![Validation](screenshots/03-Error-Validation.png)
+![Validation](screenshots/04-Error-Validation.png)
 
 **Success State**
 
-![Success](screenshots/03-Success.png)
+![Success](screenshots/05-Success.png)
+![Success](screenshots/06-Success-Main.png)
+
+**Log File**
+
+![Log](screenshots/07-Log-File.png)
 
 ---
 
@@ -164,17 +171,9 @@ lab3-password-reset/
 
 ## 🎥 Video Demo
 
-▶️ [Watch Full Demo on YouTube](your-youtube-link)
+▶️ [Watch Full Demo on YouTube](https://youtu.be/uzwW7So1nPI)
 
 > Demo covers: launching the tool, searching for a user, password validation, successful reset, and log output.
-
----
-
-## 👨‍💻 Author
-
-**[Your Name]** — IT Infrastructure / Automation Lab Series
-
-> Lab 1: User Onboarding Automation | Lab 2: AD Bulk Management | **Lab 3: Password Reset Tool** ← You are here
 
 ---
 
