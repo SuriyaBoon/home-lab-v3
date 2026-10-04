@@ -1,6 +1,6 @@
-# 🔐 Lab 3: Password Reset Self-Service Tool
+# 🔐 Lab 3: Helpdesk Password Reset Tool
 
-> **PowerShell GUI tool** for IT Helpdesk and End Users — reset passwords in under 30 seconds and reduce IT team workload by up to 70%
+> **PowerShell GUI portfolio lab** for a helpdesk operator with delegated Active Directory password-reset permissions.
 
 ---
 
@@ -20,13 +20,16 @@
 
 ## 🎯 Overview
 
-Lab 3 is part of an IT Automation project series. It delivers a **Password Reset Self-Service Tool** that enables IT Helpdesk staff and end users to reset passwords through a GUI — quickly, securely, and with a full audit trail.
+Lab 3 is part of an IT automation portfolio series. It provides a Windows Forms GUI that looks up an AD username, validates the two password fields, resets the password using the operator's existing AD permissions, and requires a password change at next logon.
+
+Despite the historical “Self-Service” window title and guide filename, this is an operator tool. It has no end-user identity verification, recovery-factor flow, approval workflow, or privilege delegation service. An ordinary user cannot gain reset rights through the GUI.
 
 **Problems solved:**
-- IT team spending 10+ minutes per ticket on password resets
-- Password resets accounting for the majority of monthly helpdesk tickets
-- No reset logs → no audit capability
-- Users setting weak or reused passwords with no enforcement
+- Repeated manual password-reset steps in a disposable AD lab
+- Password-entry mistakes and mismatched confirmation fields
+- A need to practise helpdesk status feedback and local activity logging
+
+No measured time saving or reduction in ticket volume is claimed.
 
 ---
 
@@ -35,12 +38,12 @@ Lab 3 is part of an IT Automation project series. It delivers a **Password Reset
 | Feature | Description |
 |---|---|
 | 🖥️ **User-Friendly GUI** | Windows Forms interface — no PowerShell knowledge required |
-| 🔒 **Password Complexity Validation** | Real-time checks for length, uppercase, lowercase, numbers, and special characters |
+| 🔒 **Password Complexity Validation** | Checks length and character classes when Reset is clicked; AD applies the effective domain policy |
 | ✔️ **Confirm Password Matching** | Instant alert if the confirmation password does not match |
 | 📡 **Real-Time Status Feedback** | Step-by-step status display with color-coded indicators |
-| 📝 **Activity Logging** | Every reset event is logged: timestamp, username, admin, and result |
+| 📝 **Activity Logging** | Attempts to append timestamp, target username, and success/error to a local file; no authenticated operator ID or immutable audit trail |
 | ⚠️ **Error Handling** | Graceful handling of AD unreachable, user not found, and permission denied errors |
-| 🔄 **Force Password Change** | Option to require users to change their password on next login |
+| 🔄 **Force Password Change** | Always requests a password change at next logon; the current GUI has no toggle |
 
 ---
 
@@ -56,7 +59,12 @@ PowerShell 5.1+
 **Requirements:**
 - Windows 10/11 or Windows Server 2016+
 - RSAT: Active Directory Domain Services Tools
-- Domain Admin rights or Delegated Password Reset permission
+- Delegated password-reset and user-update permissions for the intended test OU; broad Domain Admin membership is unnecessary for the portfolio scenario.
+- A writable `C:\Scripts` directory for the local log.
+
+The two AD writes currently do not specify `-ErrorAction Stop`. Some failures can be non-terminating, so a GUI success message is not sufficient evidence: independently verify the account state. Password reset and the follow-up user update are not one atomic operation.
+
+The current PowerShell character checks use case-insensitive `-match`, so the separate uppercase/lowercase tests do not reliably enforce both cases. Treat GUI validation as a lab demonstration; the effective AD password policy remains authoritative.
 
 ---
 
@@ -98,13 +106,13 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ## 📖 Usage
 
 1. **Launch** — Run `Password-Reset-Tool.ps1`
-2. **Find User** — Enter a Username or Display Name and click Search
+2. **Target User** — Enter the AD username; the GUI has no Search button or display-name lookup
 3. **Set New Password** — Enter a password that meets the complexity requirements
 4. **Confirm** — Re-enter the password in the Confirm field
-5. **Select Options** — Toggle "Force change at next login" as needed
+5. **Review** — Confirm the target username; password change at next logon is always requested
 6. **Reset** — Click Reset Password and wait for confirmation
 
-Every step is reflected in the Status Bar at the bottom and automatically written to the activity log.
+The status label shows validation or operation results. Only success and caught failure paths call the local logger; input-validation failures are not logged. Check AD state and the log independently after a lab run.
 
 ---
 
@@ -133,21 +141,7 @@ Every step is reflected in the Status Bar at the bottom and automatically writte
 
 ## 💼 Business Value
 
-```
-Before  →  After
-─────────────────────────────────────────────
-10 min / ticket    →   30 sec / ticket       🚀 -95% time
-No audit log       →   Full audit trail      📋 Compliance
-No validation      →   Real-time validation  🔒 Security
-100% IT effort     →   30% IT effort         ⚡ -70% workload
-```
-
-| KPI | Result |
-|---|---|
-| ⏱️ Average reset time | 10 minutes → **30 seconds** |
-| 📉 Password-related helpdesk tickets | Reduced by **70%** |
-| 📋 Audit trail coverage | **100%** of all sessions |
-| 🔐 Password policy compliance | **100%** enforced via code |
+This lab demonstrates a GUI around AD administration, basic input validation, and local logging. Timing, workload reduction, audit completeness, and production suitability have not been measured. Password reuse/history is enforced by AD policy, not by the GUI character checks.
 
 ---
 
